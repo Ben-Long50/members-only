@@ -16,8 +16,7 @@ import './config/passport.js';
 
 const app = express();
 
-const mongoDb =
-  'mongodb+srv://benjlong50:2rlYfkd6mwTrFKlH@cluster0.siuub83.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const mongoDb = process.env.DATABASE_URL;
 
 mongoose.connect(mongoDb);
 const db = mongoose.connection;
@@ -31,7 +30,7 @@ app.use(express.static(path.join(import.meta.dirname, 'public')));
 
 app.use(
   session({
-    secret: 'cats',
+    secret: process.env.SESSION_KEY,
     resave: false,
     saveUninitialized: true,
     store: MongoStore.create({ mongoUrl: mongoDb, collection: 'sessions' }),
