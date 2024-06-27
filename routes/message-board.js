@@ -10,7 +10,7 @@ router.get(
   '/message-board',
   asyncHandler(async (req, res) => {
     const messages = await Message.find()
-      .sort({ date: 1 })
+      .sort({ date: -1 })
       .populate('author')
       .exec();
 
@@ -50,7 +50,7 @@ router.post('/message-board', [
 
     if (!errors.isEmpty()) {
       const messages = await Message.find()
-        .sort({ date: 1 })
+        .sort({ date: -1 })
         .populate('author')
         .exec();
 
