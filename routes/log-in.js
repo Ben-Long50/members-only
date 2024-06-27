@@ -48,7 +48,7 @@ router.post('/log-in', [
   body('secret').trim().escape().optional(),
 
   asyncHandler(async (req, res, next) => {
-    if (req.body.secret === 'password') {
+    if (req.body.secret === process.env.MEMBER_PW) {
       await User.findOneAndUpdate(
         { username: req.body.username },
         { member: true },
