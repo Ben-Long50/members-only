@@ -1,11 +1,29 @@
-<!doctype html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
-</html>
+<div class="form-layout">
+  <h1 class="form-title">Log In</h1>
+  <form class="form" action="/log-in" method="POST">
+    <div class="form-field">
+      <label for="username">Username</label>
+      <input name="username" type="text" value="<%= username || '' %>" />
+    </div>
+    <div class="form-field">
+      <label for="password">Password</label>
+      <input name="password" type="password" value="<%= password || '' %>" />
+    </div>
+    <div class="form-field">
+      <label for="secret">Membership Password</label>
+      <input type="password" id="secret" name="secret">
+    </div>
+    <button class="submit-button">Log In</button>
+  </form>
+  <p>Don't have an account? <a href="/sign-up">Sign up</a></p>
+  <% if (errors) { %>
+  <div class="errors">
+    <h2>Errors:</h2>
+    <ul class="error-list">
+      <% errors.forEach(function(error) { %>
+      <li><%= error.msg %></li>
+      <% }); %>
+    </ul>
+  </div>
+  <% } %>
+</div>

@@ -1,52 +1,60 @@
-import createError from 'http-errors';
 import express from 'express';
+import session from 'express-session';
+import passport from 'passport';
+import MongoStore from 'connect-mongo';
+import mongoose from 'mongoose';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
-
-import mongoose from 'mongoose';
+import expressLayouts from 'express-ejs-layouts';
 import indexRouter from './routes/index.js';
-import usersRouter from './routes/users.js';
+import signUpRouter from './routes/sign-up.js';
+import logInRouter from './routes/log-in.js';
+import messageRouter from './routes/message-board.js';
 
-const __dirname = import.meta.dirname;
+import './config/passport.js';
 
 const app = express();
-mongoose.set('strictQuery', false);
-const mongoDB =
-  'mongodb+srv://Ben_Long:7skFOfMMxEQz6mwz@cluster0.xp4dg26.mongodb.net/local_library?retryWrites=true&w=majority&appName=Cluster0';
 
-main().catch((err) => console.log(err));
-async function main() {
-  await mongoose.connect(mongoDB);
-}
+const mongoDb =
+  'mongodb+srv://benjlong50:2rlYfkd6mwTrFKlH@cluster0.siuub83.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+mongoose.connect(mongoDb);
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'mongo connection error'));
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(import.meta.dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use(
+  session({
+    secret: 'cats',
+    resave: false,
+    saveUninitialized: true,
+    store: MongoStore.create({ mongoUrl: mongoDb, collection: 'sessions' }),
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24,
+    },
+  }),
+);
 
-// catch 404 and forward to error handler
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use((req, res, next) => {
-  next(createError(404));
+  res.locals.currentUser = req.user;
+  next();
 });
 
-// error handler
-app.use((err, req, res, next) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+app.use(expressLayouts);
+app.set('views', path.join(import.meta.dirname, 'views'));
+app.set('view engine', 'ejs');
+app.use('/', indexRouter);
+app.use('/', signUpRouter);
+app.use('/', logInRouter);
+app.use('/', messageRouter);
 
 export default app;

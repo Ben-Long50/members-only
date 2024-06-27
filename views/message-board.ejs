@@ -1,0 +1,65 @@
+<div class="message-layout">
+  <div class="message-container">
+    <h1 class="form-title">Message Board</h1>
+    <% if(messages.length > 0) { %>
+    <% messages.forEach(message => { %>
+    <div class="message">
+      <% if(user.username !== message.author.username && memberStatus === 'Guest') { %>
+      <p class="author">Anonymous</p>
+      <p class="date"></p>
+      <% } else { %>
+      <p class="author"><%= message.author.username %></p>
+      <p class="date"><%= message.date %></p>
+      <% } %>
+      <h3 class="title"><%= message.title %></h3>
+      <p class="content"><%= message.message %></p>
+      <% if(memberStatus === 'Member') { %>
+      <form action="/delete" method="post">
+        <input type="hidden" name="messageId" value="<%= message._id %>">
+        <button type="submit">Delete</button>
+      </form>
+      <% } %>
+    </div>
+    <% }) %>
+    <% } %>
+  </div>
+  <div class="form-container">
+    <h1 class="form-title">User Tools</h1>
+    <div class="user-info">
+      <div class="info-block">
+        <p>Logged in as:</p>
+        <p><%= user.username %></p>
+      </div>
+      <div class="info-block">
+        <p>Membership status:</p>
+        <p><%= memberStatus %></p>
+      </div>
+      <div class="info-block">
+        <a href="/log-out">Log out</a>
+        <a href="/delete-account">Delete account</a>
+      </div>
+    </div>
+    <form class="form" action="" method="POST">
+      <div class="form-field">
+        <label for="title">Message Title</label>
+        <input id="title" name="title" type="text" value="<%= messageTitle || '' %>" />
+      </div>
+      <div class="form-field">
+        <label for="content">Message Content</label>
+        <textarea id="content" name="content"><%= messageContent || '' %></textarea>
+      </div>
+      <button class="submit-button">Post</button>
+    </form>
+
+    <% if (errors) { %>
+    <div class="errors">
+      <h2>Errors:</h2>
+      <ul class="error-list">
+        <% errors.forEach(function(error) { %>
+        <li><%= error.msg %></li>
+        <% }); %>
+      </ul>
+    </div>
+    <% } %>
+  </div>
+</div>

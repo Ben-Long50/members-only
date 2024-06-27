@@ -1,0 +1,37 @@
+<div class="form-layout">
+  <h1 class="form-title">Sign Up</h1>
+  <form class="form" action="" method="POST">
+    <div class="form-field">
+      <label for="firstName">Frist Name</label>
+      <input id="firstName" name="firstName" type="text" value="<%= firstName || '' %>" />
+    </div>
+    <div class="form-field">
+      <label for="lastName">Last Name</label>
+      <input id="lastName" name="lastName" type="text" value="<%= lastName || '' %>" />
+    </div>
+    <div class="form-field">
+      <label for="username">Username</label>
+      <input id="username" name="username" type="text" value="<%= username || '' %>" />
+    </div>
+    <div class="form-field">
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" />
+    </div>
+    <div class="form-field">
+      <label for="confirmPassword">Confirm Password</label>
+      <input id="confirmPassword" name="confirmPassword" type="password" />
+    </div>
+    <button class="submit-button">Sign Up</button>
+  </form>
+  <p>Already have an account? <a href="/">Log in</a></p>
+  <% if (errors) { %>
+  <div class="errors">
+    <h2>Errors:</h2>
+    <ul class="error-list">
+      <% errors.forEach(function(error) { %>
+      <li><%= error.msg %></li>
+      <% }); %>
+    </ul>
+  </div>
+  <% } %>
+</div>
